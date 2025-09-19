@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { toast } from "sonner";
+// import { toast } from "sonner";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -40,21 +40,21 @@ type MutationMessages = {
   error: string;
 };
 
-export const withToast = async <T>(
-  mutationFn: Promise<T>,
-  messages: Partial<MutationMessages>
-) => {
-  const { success, error } = messages;
+// export const withToast = async <T>(
+//   mutationFn: Promise<T>,
+//   messages: Partial<MutationMessages>
+// ) => {
+//   const { success, error } = messages;
 
-  try {
-    const result = await mutationFn;
-    if (success) toast.success(success);
-    return result;
-  } catch (err) {
-    if (error) toast.error(error);
-    throw err;
-  }
-};
+//   try {
+//     const result = await mutationFn;
+//     if (success) toast.success(success);
+//     return result;
+//   } catch (err) {
+//     if (error) toast.error(error);
+//     throw err;
+//   }
+// };
 
 export const createNewUserInDatabase = async (
   user: any,
