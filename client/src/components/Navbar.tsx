@@ -49,7 +49,7 @@ const Navbar = () => {
             >Sign In</Button>
           </Link>
           <Link
-            href="/signip"
+            href="/signup"
           >
             <Button
               variant="outline"
