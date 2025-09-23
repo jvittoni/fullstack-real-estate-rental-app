@@ -41,11 +41,6 @@ const Navbar = () => {
     >
       <div className='flex justify-between items-center w-full py-3 px-8 bg-neutral-800 text-white'>
         <div className='flex items-center gap-4 md:gap-6'>
-          {/* {isDashboardPage && (
-            <div className='md:hidden'>
-              <SidebarTrigger />
-              </div>
-          )} */}
           <Link
             href="/"
             className='cursor-pointer'
@@ -59,7 +54,7 @@ const Navbar = () => {
                 height={24}
                 className='w-6 h-6'
               />
-              <div className='text-2xl font-bold'>
+              <div className='text-2xl lg:text-3xl font-bold'>
                 Residential
                 <span className='text-red-400 font-light'>
                   Rentals
