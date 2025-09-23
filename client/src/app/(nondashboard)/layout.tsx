@@ -7,6 +7,13 @@ import React from 'react'
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
 
+    //  const { data: authUser, isLoading, isFetching, error } = useGetAuthUserQuery();
+
+    // if (isLoading || isFetching || !authUser?.userInfo) {
+    //     return null; 
+    // }
+    // console.log("authUser", authUser);
+
     const { data: authUser } = useGetAuthUserQuery();
     console.log("authUser", authUser);
 
