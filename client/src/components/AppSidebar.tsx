@@ -87,7 +87,14 @@ const AppSidebar = ({ userType }: AppSidebarProps) => {
 
                                     )}
                                 >
-                                    <Link href={link.href} className='w-full' scroll={false}>
+                                    <Link
+                                        href={link.href}
+                                        className='w-full'
+                                        scroll={false}
+                                        onClick={() => {
+                                            if (open) toggleSidebar();
+                                        }}
+                                    >
                                         <div className='flex items-center gap-3'>
                                             {/* <link.icon
                                                 className={`h-5 w-5 ${isActive
@@ -97,7 +104,7 @@ const AppSidebar = ({ userType }: AppSidebarProps) => {
                                             <link.icon
                                                 className={cn(
                                                     isActive ? "text-blue-500" : "text-neutral-600",
-                                                    // Slightly larger if it's Search icon and sidebar is collapsed
+                                                    // To fix search icon sizing
                                                     !open && link.icon === Search ? "h-7 w-7" : "h-5 w-5"
                                                 )}
                                             />
