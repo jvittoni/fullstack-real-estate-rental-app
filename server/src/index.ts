@@ -10,7 +10,8 @@ import { authMiddleware } from "./middleware/authMiddleware.ts";
 import tenantRoutes from "./routes/tenantRoutes.ts";
 import managerRoutes from "./routes/managerRoutes.ts";
 import propertyRoutes from "./routes/propertyRoutes.ts";
-import leaseRoutes from "./routes/leaseRoutes.ts"
+import leaseRoutes from "./routes/leaseRoutes.ts";
+import applicationRoutes from "./routes/applicationRoutes.ts";
 
 // CONFIGURATIONS
 dotenv.config();
@@ -28,6 +29,7 @@ app.get("/", (req, res) => {
     res.send("This is home route");
 });
 
+app.use("/applications", applicationRoutes);
 app.use("/properties", propertyRoutes);
 app.use("/leases", leaseRoutes);
 app.use("/tenants", authMiddleware(["tenant"]), tenantRoutes);

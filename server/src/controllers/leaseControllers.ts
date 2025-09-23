@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import type { Request, Response } from "express";
-import { wktToGeoJSON } from "@terraformer/wkt";
 
 const prisma = new PrismaClient();
 
