@@ -145,7 +145,7 @@ export const getProperties = async (req: Request, res: Response): Promise<void> 
         res.json(properties);
 
     } catch (error: any) {
-        res.status(500).json({ message: `Error retieving manager: ${error.message}` });
+        res.status(500).json({ message: `Error retrieving manager: ${error.message}` });
     }
 };
 

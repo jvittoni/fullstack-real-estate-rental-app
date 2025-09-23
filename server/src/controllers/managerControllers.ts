@@ -27,7 +27,7 @@ export const getManager = async (req: Request, res: Response): Promise<void> => 
         }
 
     } catch (error: any) {
-        res.status(500).json({ message: `Error retieving manager: ${error.message}` });
+        res.status(500).json({ message: `Error retrieving manager: ${error.message}` });
     }
 };
 

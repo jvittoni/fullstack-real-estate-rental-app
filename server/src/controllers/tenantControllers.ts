@@ -30,7 +30,7 @@ export const getTenant = async (req: Request, res: Response): Promise<void> => {
         }
 
     } catch (error: any) {
-        res.status(500).json({ message: `Error retieving tenant: ${error.message}` });
+        res.status(500).json({ message: `Error retrieving tenant: ${error.message}` });
     }
 };
 
