@@ -9,6 +9,7 @@ import FiltersFull from './FiltersFull';
 import { cleanParams } from '@/lib/utils';
 import { setFilters } from '@/state';
 import Map from './Map';
+import Listings from './Listings';
 
 const SearchPage = () => {
 
@@ -54,11 +55,20 @@ const SearchPage = () => {
                 >
                     <FiltersFull />
                 </div>
-                <Map />
-                <div className='basis-4/12 overflow-y-auto'>
-                    {/* <Listings /> */}
+                {/* <Map />
 
+                <div className="basis-4/12 overflow-y-auto">
+                    <Listings />
+                </div> */}
+
+                <div className='flex flex-col md:flex-row w-full overflow-y-auto'>
+                    <Map />
+
+                    <div className="basis-5/12 md:basis-6/12 lg:basis-5/12 mt-5 md:mt-0 md:overflow-y-auto">
+                        <Listings />
+                    </div>
                 </div>
+
             </div>
         </div>
     )

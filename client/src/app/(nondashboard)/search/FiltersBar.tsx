@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Filter, Grid, List, Search } from 'lucide-react';
 import { PropertyTypeIcons } from '@/lib/constants';
-import LocationSearch from './LocationSearch';
+import LocationSearch from '../../../components/LocationSearch';
 
 const FiltersBar = () => {
 
@@ -61,9 +61,11 @@ const FiltersBar = () => {
     };
 
     return (
-        <div className="flex justify-between items-center w-full py-5">
+
+
+        <div className="overflow-x-auto w-full py-5">
             {/* Filters */}
-            <div className="flex justify-between items-center gap-4 p-2">
+            <div className="flex justify-between items-center gap-4 p-2 min-w-max">
                 {/* All Filters */}
                 <Button
                     variant="outline"
@@ -89,7 +91,7 @@ const FiltersBar = () => {
                             handleFilterChange("priceRange", value, true)
                         }
                     >
-                        <SelectTrigger className="w-22 rounded-xl border-neutral-400">
+                        <SelectTrigger className="w-28 rounded-xl border-neutral-400">
                             <SelectValue>
                                 {formatPriceValue(filters.priceRange[0], true)}
                             </SelectValue>
@@ -111,7 +113,7 @@ const FiltersBar = () => {
                             handleFilterChange("priceRange", value, false)
                         }
                     >
-                        <SelectTrigger className="w-22 rounded-xl border-neutral-400">
+                        <SelectTrigger className="w-28 rounded-xl border-neutral-400">
                             <SelectValue>
                                 {formatPriceValue(filters.priceRange[1], false)}
                             </SelectValue>
@@ -134,7 +136,7 @@ const FiltersBar = () => {
                         value={filters.beds}
                         onValueChange={(value) => handleFilterChange("beds", value, null)}
                     >
-                        <SelectTrigger className="w-26 rounded-xl border-neutral-400">
+                        <SelectTrigger className="w-28 rounded-xl border-neutral-400">
                             <SelectValue placeholder="Beds" />
                         </SelectTrigger>
                         <SelectContent className="bg-white">
@@ -151,7 +153,7 @@ const FiltersBar = () => {
                         value={filters.baths}
                         onValueChange={(value) => handleFilterChange("baths", value, null)}
                     >
-                        <SelectTrigger className="w-26 rounded-xl border-neutral-400">
+                        <SelectTrigger className="w-28 rounded-xl border-neutral-400">
                             <SelectValue placeholder="Baths" />
                         </SelectTrigger>
                         <SelectContent className="bg-white">
@@ -185,34 +187,39 @@ const FiltersBar = () => {
                         ))}
                     </SelectContent>
                 </Select>
-            </div>
 
-            {/* View Mode */}
-            <div className="flex justify-between items-center gap-4 p-2">
-                <div className="flex border rounded-2xl">
-                    <Button
-                        variant="ghost"
-                        className={cn(
-                            "px-3 py-1 rounded-none rounded-l-xl hover:bg-neutral-600 hover:text-neutral-50",
-                            viewMode === "list" ? "bg-neutral-800 text-neutral-50" : ""
-                        )}
-                        onClick={() => dispatch(setViewMode("list"))}
-                    >
-                        <List className="w-5 h-5" />
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        className={cn(
-                            "px-3 py-1 rounded-none rounded-r-xl hover:bg-neutral-600 hover:text-neutral-50",
-                            viewMode === "grid" ? "bg-neutral-800 text-neutral-50" : ""
-                        )}
-                        onClick={() => dispatch(setViewMode("grid"))}
-                    >
-                        <Grid className="w-5 h-5" />
-                    </Button>
+
+                {/* View Mode */}
+                <div className="flex justify-between items-center gap-4 p-2">
+                    <div className="flex border rounded-2xl">
+                        <Button
+                            variant="ghost"
+                            className={cn(
+                                "px-3 py-1 rounded-none rounded-l-xl hover:bg-neutral-600 hover:text-neutral-50",
+                                viewMode === "list" ? "bg-neutral-800 text-neutral-50" : ""
+                            )}
+                            onClick={() => dispatch(setViewMode("list"))}
+                        >
+                            <List className="w-5 h-5" />
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            className={cn(
+                                "px-3 py-1 rounded-none rounded-r-xl hover:bg-neutral-600 hover:text-neutral-50",
+                                viewMode === "grid" ? "bg-neutral-800 text-neutral-50" : ""
+                            )}
+                            onClick={() => dispatch(setViewMode("grid"))}
+                        >
+                            <Grid className="w-5 h-5" />
+                        </Button>
+                    </div>
                 </div>
             </div>
+
         </div>
+
+
+
     )
 }
 

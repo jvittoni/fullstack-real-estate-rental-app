@@ -18,7 +18,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import LocationSearch from "./LocationSearch";
+import LocationSearch from "../../../components/LocationSearch";
 
 const FiltersFull = () => {
     const dispatch = useDispatch();

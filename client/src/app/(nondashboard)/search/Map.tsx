@@ -47,7 +47,7 @@ const Map = () => {
     if (isError || !properties) return <div>Failed to fetch properties</div>;
 
     return (
-        <div className="basis-5/12 grow relative rounded-xl">
+        <div className="basis-5/12 grow relative rounded-xl h-full min-h-[450px]">
             <div
                 className="map-container rounded-xl"
                 ref={mapContainerRef}
@@ -61,6 +61,8 @@ const Map = () => {
 };
 
 const createPropertyMarker = (property: Property, map: mapboxgl.Map) => {
+    const imgSrc = property.photoUrls?.[0] || "/placeholder.jpg";
+
     const marker = new mapboxgl.Marker()
         .setLngLat([
             property.location.coordinates.longitude,
@@ -69,15 +71,22 @@ const createPropertyMarker = (property: Property, map: mapboxgl.Map) => {
         .setPopup(
             new mapboxgl.Popup().setHTML(
                 `<div class="marker-popup">
-          <div class="marker-popup-image"></div>
-          <div>
-            <a href="/search/${property.id}" target="_blank" class="marker-popup-title">${property.name}</a>
-            <p class="marker-popup-price">
-              $${property.pricePerMonth}
-              <span class="marker-popup-price-unit"> / month</span>
-            </p>
-          </div>
-        </div>`
+                    <div class="marker-popup-image">
+                        <img 
+                            src="${imgSrc}" 
+                            alt="${property.name}" 
+                            style="width: 100%; height: 100%; object-fit: fill; border-radius: 8px"
+                            onerror="this.onerror=null;this.src='/placeholder.jpg';"
+                        />
+                    </div>
+                    <div>
+                        <a href="/search/${property.id}" target="_blank" class="marker-popup-title">${property.name}</a>
+                        <p class="marker-popup-price">
+                            $${property.pricePerMonth}
+                            <span class="marker-popup-price-unit"> / month</span>
+                        </p>
+                    </div>
+                </div>`
             )
         )
         .addTo(map);
