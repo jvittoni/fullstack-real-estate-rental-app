@@ -7,7 +7,7 @@ import React from 'react'
 const TenantSettings = () => {
 
     const { data: authUser, isLoading } = useGetAuthUserQuery();
-    console.log("authUser:", authUser);
+    // console.log("authUser:", authUser);
     const [updateTenant] = useUpdateTenantSettingsMutation();
 
     if (isLoading) return <>Loading...</>;

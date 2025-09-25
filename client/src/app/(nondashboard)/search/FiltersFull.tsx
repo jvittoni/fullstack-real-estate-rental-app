@@ -18,6 +18,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import LocationSearch from "./LocationSearch";
 
 const FiltersFull = () => {
     const dispatch = useDispatch();
@@ -63,9 +64,6 @@ const FiltersFull = () => {
         }));
     };
 
-    const handleLocationSearch = async () => {
-
-    };
 
     if (!isFiltersFullOpen) return null;
 
@@ -73,28 +71,7 @@ const FiltersFull = () => {
         <div className="bg-white rounded-lg px-4 h-full overflow-auto pb-10 border-r border-neutral-100">
             <div className="flex flex-col space-y-6">
                 {/* Location */}
-                <div>
-                    <h4 className="font-bold mb-2">Location</h4>
-                    <div className="flex items-center">
-                        <Input
-                            placeholder="Enter location"
-                            value={filters.location}
-                            onChange={(e) =>
-                                setLocalFilters((prev) => ({
-                                    ...prev,
-                                    location: e.target.value,
-                                }))
-                            }
-                            className="rounded-l-xl rounded-r-none border-r-0"
-                        />
-                        <Button
-                            onClick={handleLocationSearch}
-                            className="rounded-r-xl rounded-l-none border-l-none border-black shadow-none border hover:bg-neutral-700 hover:text-neutral-50"
-                        >
-                            <Search className="w-4 h-4" />
-                        </Button>
-                    </div>
-                </div>
+                <LocationSearch />
 
                 {/* Property Type */}
                 <div>

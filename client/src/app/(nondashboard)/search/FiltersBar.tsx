@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Filter, Grid, List, Search } from 'lucide-react';
 import { PropertyTypeIcons } from '@/lib/constants';
+import LocationSearch from './LocationSearch';
 
 const FiltersBar = () => {
 
@@ -59,9 +60,6 @@ const FiltersBar = () => {
         updateURL(newFilters);
     };
 
-    const handleLocationSearch = async () => {
-    };
-
     return (
         <div className="flex justify-between items-center w-full py-5">
             {/* Filters */}
@@ -80,21 +78,7 @@ const FiltersBar = () => {
                 </Button>
 
                 {/* Search Location */}
-                <div className="flex items-center">
-                    <Input
-                        placeholder="Search location"
-                        value={searchInput}
-                        onChange={(e) => setSearchInput(e.target.value)}
-                        className="w-40 rounded-l-xl rounded-r-none border-neutral-400 border-r-0"
-                    />
-                    <Button
-                        onClick={handleLocationSearch}
-                        className={`rounded-r-xl rounded-l-none border-l-none border-neutral-400 shadow-none 
-              border hover:bg-neutral-700 hover:text-neutral-50`}
-                    >
-                        <Search className="w-4 h-4" />
-                    </Button>
-                </div>
+                <LocationSearch />
 
                 {/* Price Range */}
                 <div className="flex gap-1">
