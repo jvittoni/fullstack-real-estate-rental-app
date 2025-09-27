@@ -144,6 +144,11 @@
   font-variant: small-caps;
 }
 
+.dashboard-container {
+  padding-left: 1.75rem;
+  padding-right: 1.75rem;
+}
+
 .custom-select {
   -moz-appearance: none;
   -webkit-appearance: none;
