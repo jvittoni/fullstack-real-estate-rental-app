@@ -17,7 +17,7 @@ export const propertySchema = z.object({
   beds: z.coerce.number().positive().min(0).max(10).int(),
   baths: z.coerce.number().positive().min(0).max(10).int(),
   squareFeet: z.coerce.number().int().positive(),
-  propertyType: z.nativeEnum(PropertyTypeEnum),
+  propertyType: z.enum(PropertyTypeEnum),
   address: z.string().min(1, "Address is required"),
   city: z.string().min(1, "City is required"),
   state: z.string().min(1, "State is required"),

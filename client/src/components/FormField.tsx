@@ -1,27 +1,10 @@
 import React from "react";
-import {
-  ControllerRenderProps,
-  FieldValues,
-  useFormContext,
-  useFieldArray,
-} from "react-hook-form";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { ControllerRenderProps, FieldValues, useFormContext, useFieldArray } from "react-hook-form";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Edit, X, Plus } from "lucide-react";
 import { registerPlugin } from "filepond";
@@ -30,6 +13,7 @@ import "filepond/dist/filepond.min.css";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
+import { Checkbox } from "./ui/checkbox";
 
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
 
@@ -45,7 +29,8 @@ interface FormFieldProps {
   | "switch"
   | "password"
   | "file"
-  | "multi-input";
+  | "multi-input"
+  | "checkbox";
   placeholder?: string;
   options?: { value: string; label: string }[];
   accept?: string;
@@ -76,9 +61,7 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
 }) => {
   const { control } = useFormContext();
 
-  const renderFormControl = (
-    field: ControllerRenderProps<FieldValues, string>
-  ) => {
+  const renderFormControl = (field: ControllerRenderProps<FieldValues, string>) => {
     switch (type) {
       case "textarea":
         return (
@@ -86,7 +69,7 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
             placeholder={placeholder}
             {...field}
             rows={3}
-            className={`border-gray-200 p-4 ${inputClassName}`}
+            className={`border-gray-200 p-4 resize-none overflow-y-auto min-h-50 ${inputClassName}`}
           />
         );
       case "select":
@@ -106,7 +89,7 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
                 <SelectItem
                   key={option.value}
                   value={option.value}
-                  className={`cursor-pointer hover:!bg-gray-100 hover:!text-customgreys-darkGrey`}
+                  className={`cursor-pointer hover:!bg-gray-100 hover:!text-black`}
                 >
                   {option.label}
                 </SelectItem>
@@ -121,13 +104,28 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
               checked={field.value}
               onCheckedChange={field.onChange}
               id={name}
-              className={`text-customgreys-dirtyGrey ${inputClassName}`}
+              className={`text-black ${inputClassName}`}
             />
             <FormLabel htmlFor={name} className={labelClassName}>
               {label}
             </FormLabel>
           </div>
         );
+      case "checkbox":
+        return (
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              checked={field.value}
+              onCheckedChange={field.onChange}
+              id={name}
+              disabled={disabled}
+            />
+            <FormLabel htmlFor={name} className={labelClassName}>
+              {label}
+            </FormLabel>
+          </div>
+        );
+
       case "file":
         return (
           <FilePond
@@ -183,7 +181,7 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
           className={`${type !== "switch" && "rounded-md"
             } relative ${className}`}
         >
-          {type !== "switch" && (
+          {type !== "switch" && type !== "checkbox" && (
             <div className="flex justify-between items-center">
               <FormLabel className={`text-sm ${labelClassName}`}>
                 {label}
@@ -193,7 +191,7 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
                 isIcon &&
                 type !== "file" &&
                 type !== "multi-input" && (
-                  <Edit className="size-4 text-customgreys-dirtyGrey" />
+                  <Edit className="size-4 text-black" />
                 )}
             </div>
           )}
@@ -239,7 +237,7 @@ const MultiInputField: React.FC<MultiInputFieldProps> = ({
                 <Input
                   {...field}
                   placeholder={placeholder}
-                  className={`flex-1 border-none bg-customgreys-darkGrey p-4 ${inputClassName}`}
+                  className={`flex-1 border-none bg-black p-4 ${inputClassName}`}
                 />
               </FormControl>
             )}
@@ -249,7 +247,7 @@ const MultiInputField: React.FC<MultiInputFieldProps> = ({
             onClick={() => remove(index)}
             variant="ghost"
             size="icon"
-            className="text-customgreys-dirtyGrey"
+            className="text-black"
           >
             <X className="w-4 h-4" />
           </Button>
@@ -260,7 +258,7 @@ const MultiInputField: React.FC<MultiInputFieldProps> = ({
         onClick={() => append("")}
         variant="outline"
         size="sm"
-        className="mt-2 text-customgreys-dirtyGrey"
+        className="mt-2 text-black"
       >
         <Plus className="w-4 h-4 mr-2" />
         Add Item
