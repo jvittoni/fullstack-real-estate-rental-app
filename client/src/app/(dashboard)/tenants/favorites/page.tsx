@@ -1,9 +1,10 @@
 "use client";
 
-import Card from '@/components/Card';
+import FavoriteCard from '@/components/FavoriteCard';
 import Header from '@/components/Header';
 import Loading from '@/components/Loading';
-import { useGetAuthUserQuery, useGetPropertiesQuery, useGetTenantQuery } from '@/state/api';
+import { useGetAuthUserQuery, useGetPropertiesQuery, useGetTenantQuery, useRemoveFavoritePropertyMutation } from '@/state/api';
+import { Property } from '@/types/prismaTypes';
 import React from 'react'
 
 const Favorites = () => {
@@ -16,6 +17,8 @@ const Favorites = () => {
     }
   );
 
+  const [removeFavorite] = useRemoveFavoritePropertyMutation();
+
   const {
     data: favoriteProperties,
     isLoading,
@@ -24,6 +27,23 @@ const Favorites = () => {
     { favoriteIds: tenant?.favorites?.map((fav: { id: number }) => fav.id) },
     { skip: !tenant?.favorites || tenant?.favorites.length === 0 }
   );
+
+  const handleRemoveFavorite = async (propertyId: number) => {
+    if (!authUser?.cognitoInfo?.userId) return;
+
+    const confirmed = window.confirm("Are you sure you want to remove this property from your favorites?");
+
+    if (!confirmed) return;
+
+    try {
+      await removeFavorite({
+        cognitoId: authUser.cognitoInfo.userId,
+        propertyId,
+      }).unwrap();
+    } catch (err) {
+      console.error("Failed to remove favorite:", err);
+    }
+  };
 
   if (isLoading) return <Loading />;
   if (error) return <div>Error loading favorites</div>;
@@ -34,15 +54,18 @@ const Favorites = () => {
         title="Favorite Properties"
         subtitle="Browse and manage your saved property listings."
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
         {favoriteProperties?.map((property) => (
-          <Card
+          <FavoriteCard
             key={property.id}
             property={property}
-            isFavorite={true}
-            onFavoriteToggle={() => { }}
-            showFavoriteButton={false}
-            propertyLink={`/tenants/residences/${property.id}`}
+            isFavorite={
+              tenant?.favorites?.some(
+                (fav: Property) => fav.id === property.id
+              ) || false
+            }
+            removeFavorite={() => handleRemoveFavorite(property.id)}
+            showFavoriteButton={!!authUser}
           />
         ))}
       </div>
