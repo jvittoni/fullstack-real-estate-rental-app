@@ -83,3 +83,8 @@ export const createNewUserInDatabase = async (
 
   return createUserResponse;
 };
+
+// Capitalize the first letter of each word
+export const capitalizeWords = (str: string) => {
+  return str.replace(/\b\w/g, (char) => char.toUpperCase());
+};

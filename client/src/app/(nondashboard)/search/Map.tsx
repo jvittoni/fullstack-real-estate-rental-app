@@ -27,7 +27,7 @@ const Map = () => {
             container: mapContainerRef.current!,
             style: process.env.NEXT_PUBLIC_MAPBOX_STYLE!,
             center: filters.coordinates || [-74.5, 40],
-            zoom: 9,
+            zoom: 12,
         });
 
         properties.forEach((property) => {

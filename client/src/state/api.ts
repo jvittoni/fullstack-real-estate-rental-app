@@ -89,8 +89,13 @@ export const api = createApi({
           amenities: filters.amenities?.join(","),
           availableFrom: filters.availableFrom,
           favoriteIds: filters.favoriteIds?.join(","),
-          latitude: filters.coordinates?.[0],
-          longitude: filters.coordinates?.[1],
+          latitude: filters.coordinates?.[1],
+          longitude: filters.coordinates?.[0],
+          //  bbox: filters.bbox ? JSON.stringify(filters.bbox) : undefined,
+          bbox: filters.bbox?.join(","),
+          city: filters.city,
+          state: filters.state,
+
         });
 
         return { url: "properties", params };
@@ -140,8 +145,8 @@ export const api = createApi({
       ],
       async onQueryStarted(_, { queryFulfilled }) {
         await withToast(queryFulfilled, {
-          success: "Added to favorites!!",
-          error: "Failed to add to favorites",
+          success: "Added to favorites!",
+          error: "Failed to add to favorites.",
         });
       },
     }),

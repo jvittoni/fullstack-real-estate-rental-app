@@ -1,5 +1,6 @@
 import Card from '@/components/Card';
 import CardCompact from '@/components/CardCompact';
+import { capitalizeWords } from '@/lib/utils';
 import { useAddFavoritePropertyMutation, useGetAuthUserQuery, useGetPropertiesQuery, useGetTenantQuery, useRemoveFavoritePropertyMutation } from '@/state/api';
 import { useAppSelector } from '@/state/redux';
 import { Property } from "@/types/prismaTypes";
@@ -54,9 +55,15 @@ const Listings = () => {
         <div className="w-full">
             <h3 className="text-sm px-4 font-bold">
                 {properties.length}{" "}
-                <span className="text-gray-700 font-normal">
-                    Properties in {filters.location}
+                {properties.length === 1 ? (
+                    <span className="text-gray-700 font-normal">
+                    Property in {capitalizeWords(filters.location)}
                 </span>
+                ) : (
+                    <span className="text-gray-700 font-normal">
+                    Properties in {capitalizeWords(filters.location)}
+                </span>
+                )}
             </h3>
             <div className="flex">
                 <div className="p-4 w-full">

@@ -26,6 +26,9 @@ export const getProperties = async (req: Request, res: Response): Promise<void> 
             availableFrom,
             latitude,
             longitude,
+            bbox,
+            city,
+            state,
         } = req.query;
 
         let whereConditions: Prisma.Sql[] = [];
@@ -103,20 +106,46 @@ export const getProperties = async (req: Request, res: Response): Promise<void> 
             }
         }
 
-        if (latitude && longitude) {
-            const lat = parseFloat(latitude as string);
-            const lng = parseFloat(longitude as string);
-            const radiusInKilometers = 1000;
-            const degrees = radiusInKilometers / 111; // Converts kilometers to degrees
+        if (city) {
+            // Most specific: filter by city
+            whereConditions.push(
+                Prisma.sql`LOWER(l."city") = LOWER(${city})`
+            );
+        } else if (state) {
+            // Next: filter by state
+            whereConditions.push(
+                Prisma.sql`LOWER(l."state") = LOWER(${state})`
+            );
+        } else if (bbox) {
+            // Then: filter by bounding box if city/state not present
+            const [minLng, minLat, maxLng, maxLat] = (bbox as string)
+                .split(",")
+                .map(parseFloat);
 
             whereConditions.push(
-                Prisma.sql`ST_DWithin(
-          l.coordinates::geometry,
-          ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326),
-          ${degrees}
-        )`
+                Prisma.sql`
+      l."coordinates" && ST_MakeEnvelope(${minLng}, ${minLat}, ${maxLng}, ${maxLat}, 4326)
+    `
+            );
+        } else if (latitude && longitude) {
+            // Fallback: radius filter around lat/lng
+            const lat = parseFloat(latitude as string);
+            const lng = parseFloat(longitude as string);
+            const radiusInKilometers = 100;
+            const degrees = radiusInKilometers / 111; // approx degrees
+
+            whereConditions.push(
+                Prisma.sql`
+      ST_DWithin(
+        l.coordinates::geometry,
+        ST_SetSRID(ST_MakePoint(${lng}, ${lat}), 4326),
+        ${degrees}
+      )
+    `
             );
         }
+
+
         const completeQuery = Prisma.sql`
       SELECT 
         p.*,

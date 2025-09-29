@@ -11,6 +11,43 @@ import { setFilters } from '@/state';
 import Map from './Map';
 import Listings from './Listings';
 
+const fetchBoundingBox = async (place: string) => {
+    const accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN!;
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(place)}.json?types=place,region&access_token=${accessToken}&limit=1`;
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (data.features?.length > 0) {
+        const feature = data.features[0];
+
+        const bbox = feature.bbox;
+        const placeType = feature.place_type?.[0]; // "place" (city) or "region" (state)
+
+        let city = null;
+        let state = null;
+
+        // Extract city/state from context if available
+        feature.context?.forEach((ctx: any) => {
+            if (ctx.id.startsWith("place")) city = ctx.text;
+            if (ctx.id.startsWith("region")) state = ctx.text;
+        });
+
+        // If feature itself is city or state
+        if (placeType === "place") city = feature.text;
+        if (placeType === "region") state = feature.text;
+
+        return {
+            bbox,
+            city,
+            state,
+        };
+    }
+
+    return null;
+};
+
+
 const SearchPage = () => {
 
     const searchParams = useSearchParams();
@@ -20,28 +57,53 @@ const SearchPage = () => {
     );
 
     useEffect(() => {
-        const location = searchParams.get("location");
-        const lat = searchParams.get("lat");
-        const lng = searchParams.get("lng");
+        const fetchFilters = async () => {
+            const location = searchParams.get("location");
+            const lat = searchParams.get("lat");
+            const lng = searchParams.get("lng");
+            const city = searchParams.get("city");
+            const state = searchParams.get("state");
 
-        const initialFilters = Array.from(searchParams.entries()).reduce(
-            (acc: any, [key, value]) => {
-                if (key === "priceRange" || key === "squareFeet") {
-                    acc[key] = value.split(",").map((v) => (v === "" ? null : Number(v)));
-                } else if (key !== "lat" && key !== "lng") {
-                    acc[key] = value === "any" ? null : value;
+            const initialFilters = Array.from(searchParams.entries()).reduce(
+                (acc: any, [key, value]) => {
+                    if (key === "priceRange" || key === "squareFeet") {
+                        acc[key] = value.split(",").map((v) => (v === "" ? null : Number(v)));
+                    } else if (key !== "lat" && key !== "lng") {
+                        acc[key] = value === "any" ? null : value;
+                    }
+                    return acc;
+                },
+                {}
+            );
+
+            if (lat && lng) {
+                initialFilters.coordinates = [parseFloat(lng), parseFloat(lat)]; // [lng, lat]
+            }
+
+            // If city or state provided in URL, use those, else fallback to fetching bbox via Mapbox
+            if (city) {
+                initialFilters.city = city;
+            }
+            if (state) {
+                initialFilters.state = state;
+            }
+
+            if (location && (!city || !state)) {
+                const geocodeResult = await fetchBoundingBox(location);
+                if (geocodeResult) {
+                    const { bbox, city: geoCity, state: geoState } = geocodeResult;
+
+                    if (bbox) initialFilters.bbox = bbox;
+                    if (geoCity) initialFilters.city = geoCity;
+                    if (geoState) initialFilters.state = geoState;
                 }
-                return acc;
-            },
-            {}
-        );
+            }
 
-        if (lat && lng) {
-            initialFilters.coordinates = [parseFloat(lng), parseFloat(lat)]; // [lng, lat]
-        }
+            const cleanedFilters = cleanParams(initialFilters);
+            dispatch(setFilters(cleanedFilters));
+        };
 
-        const cleanedFilters = cleanParams(initialFilters);
-        dispatch(setFilters(cleanedFilters));
+        fetchFilters();
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
