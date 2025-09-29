@@ -89,8 +89,8 @@ export const api = createApi({
           amenities: filters.amenities?.join(","),
           availableFrom: filters.availableFrom,
           favoriteIds: filters.favoriteIds?.join(","),
-          latitude: filters.coordinates?.[1],
-          longitude: filters.coordinates?.[0],
+          latitude: filters.coordinates?.[0],
+          longitude: filters.coordinates?.[1],
         });
 
         return { url: "properties", params };

@@ -20,19 +20,25 @@ const SearchPage = () => {
     );
 
     useEffect(() => {
+        const location = searchParams.get("location");
+        const lat = searchParams.get("lat");
+        const lng = searchParams.get("lng");
+
         const initialFilters = Array.from(searchParams.entries()).reduce(
             (acc: any, [key, value]) => {
                 if (key === "priceRange" || key === "squareFeet") {
                     acc[key] = value.split(",").map((v) => (v === "" ? null : Number(v)));
-                } else if (key === "coordinates") {
-                    acc[key] = value.split(",").map(Number);
-                } else {
+                } else if (key !== "lat" && key !== "lng") {
                     acc[key] = value === "any" ? null : value;
                 }
                 return acc;
             },
             {}
         );
+
+        if (lat && lng) {
+            initialFilters.coordinates = [parseFloat(lng), parseFloat(lat)]; // [lng, lat]
+        }
 
         const cleanedFilters = cleanParams(initialFilters);
         dispatch(setFilters(cleanedFilters));

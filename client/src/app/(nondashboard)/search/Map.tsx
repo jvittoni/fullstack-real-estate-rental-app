@@ -11,6 +11,8 @@ mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN as string;
 
 const Map = () => {
     const mapContainerRef = useRef(null);
+    const mapRef = useRef<mapboxgl.Map | null>(null);
+
     const filters = useAppSelector((state) => state.global.filters);
     const {
         data: properties,
@@ -42,6 +44,8 @@ const Map = () => {
 
         return () => map.remove();
     }, [isLoading, isError, properties, filters.coordinates]);
+
+
 
     if (isLoading) return <>Loading...</>;
     if (isError || !properties) return <div>Failed to fetch properties</div>;
