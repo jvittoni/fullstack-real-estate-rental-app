@@ -197,9 +197,9 @@ const Applications = () => {
                     </TabsContent>
                 ))}
             </Tabs>
-            {/* {(!applications || applications.length === 0) && (
+            {(!applications || applications.length === 0) && (
                 <p>You don&lsquo;t currently have any applications.</p>
-            )} */}
+            )}
         </div>
     );
 };

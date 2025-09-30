@@ -63,7 +63,13 @@ export const api = createApi({
         method: "PUT",
         body: updatedTenant
       }),
-      invalidatesTags: (result) => [{ type: "Tenants", id: result?.id }]
+      invalidatesTags: (result) => [{ type: "Tenants", id: result?.id }],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          success: "Settings updated successfully!",
+          error: "Failed to update settings.",
+        });
+      },
     }),
     updateManagerSettings: build.mutation<Manager, { cognitoId: string } & Partial<Manager>>({
       query: ({ cognitoId, ...updatedManager }) => ({
@@ -71,7 +77,13 @@ export const api = createApi({
         method: "PUT",
         body: updatedManager
       }),
-      invalidatesTags: (result) => [{ type: "Managers", id: result?.id }]
+      invalidatesTags: (result) => [{ type: "Managers", id: result?.id }],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          success: "Settings updated successfully!",
+          error: "Failed to update settings.",
+        });
+      },
     }),
 
     // property related endpoints

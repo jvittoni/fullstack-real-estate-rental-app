@@ -1,81 +1,105 @@
-import { Lease, Property } from '@/types/prismaTypes';
-import { Download, House, MapPin, User } from 'lucide-react';
-import React from 'react'
+import { Property } from "@/types/prismaTypes";
+import { Bath, Bed, Heart, House, Star } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import React, { useState } from 'react';
+import { Button } from "./ui/button";
 
-const ResidenceCard = ({ property, currentLease, }: { property: Property; currentLease: Lease; }) => {
+interface ResidenceCardProps {
+    property: Property;
+}
+
+const ResidenceCard = ({
+    property,
+}: ResidenceCardProps) => {
+    const [imgSrc, setImgSrc] = useState(
+        property.photoUrls?.[0] || "/placeholder.jpg"
+    );
+
     return (
-        <div className="bg-white rounded-xl overflow-hidden shadow-lg w-full mb-5 p-3 xl:max-w-2/3">
-            <div className='relative'>
-
-                {/* Header */}
-                <div className='flex'>
-                    <div className="ml-auto bg-green-500 w-fit text-white px-4 py-1 rounded-full text-sm font-semibold">
-                        Active Lease
-                    </div>
+        <div className="bg-white rounded-xl overflow-hidden shadow-lg w-full mb-5 lg:max-w-6/7 xl:max-w-full">
+            <div className="relative">
+                <div className="w-full h-48 relative">
+                    <Image
+                        src={imgSrc}
+                        alt={property.name}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        onError={() => setImgSrc("/placeholder.jpg")}
+                    />
                 </div>
-                <div className='flex gap-5'>
-                    {/* <div className="w-44 h-22 lg:w-64 lg:h-32 object-cover bg-slate-500 rounded-xl mt-3.5"></div> */}
-                    <div className="w-44 h-22 lg:w-64 lg:h-32 bg-slate-200 rounded-xl mt-3.5 flex justify-center items-center">
-                        <House className='w-10 h-10 lg:w-20 lg:h-20 text-slate-300' />
-                    </div>
-
-                    <div className='flex flex-col'>
-                        <h2 className="text-2xl font-bold my-2">{property.name}</h2>
-                        <div className="flex items-center mb-2">
-                            <MapPin className="w-5 h-5 mr-1" />
-                            <span>
-                                {property.location.city}, {property.location.country}
-                            </span>
-                        </div>
-                        <div className="text-xl font-bold">
-                            ${currentLease.rent.toLocaleString(undefined, { maximumFractionDigits: 0 })}{" "}
-                            <span className="text-gray-500 text-sm font-normal">/ night</span>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Dates */}
-                <div>
-                    <hr className="my-4 text-neutral-200" />
-                    <div className="flex justify-around items-center">
-                        <div className="lg:flex xl:flex-col 2xl:flex-row px-1 ">
-                            <div className="text-gray-500 mr-2">Start Date: </div>
-                            <div className="font-semibold">
-                                {new Date(currentLease.startDate).toLocaleDateString()}
-                            </div>
-                        </div>
-                        <div className="border-[0.5px] border-neutral-300 h-4" />
-                        <div className="lg:flex xl:flex-col 2xl:flex-row  px-1">
-                            <div className="text-gray-500 mr-2">End Date: </div>
-                            <div className="font-semibold">
-                                {new Date(currentLease.endDate).toLocaleDateString()}
-                            </div>
-                        </div>
-                        <div className="border-[0.5px] border-neutral-300 h-4" />
-                        <div className="lg:flex xl:flex-col 2xl:flex-row px-1">
-                            <div className="text-gray-500 mr-2">Next Payment: </div>
-                            <div className="font-semibold">
-                                {new Date(currentLease.endDate).toLocaleDateString()}
-                            </div>
-                        </div>
-                    </div>
-                    <hr className="my-4 text-neutral-200" />
-                </div>
-
-                {/* Buttons */}
-                <div className="flex justify-end gap-2 w-full">
-                    <button className="bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-md flex items-center justify-center hover:bg-neutral-700 hover:text-neutral-50 cursor-pointer">
-                        <User className="w-5 h-5 mr-2" />
-                        Manager
-                    </button>
-                    <button className="bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-md flex items-center justify-center hover:bg-neutral-700 hover:text-neutral-50 cursor-pointer">
-                        <Download className="w-5 h-5 mr-2" />
-                        Download Agreement
-                    </button>
+                <div className="absolute bottom-4 left-4 flex gap-2">
+                    {property.isPetsAllowed && (
+                        <span className="bg-white/80 text-black text-xs font-semibold px-2 py-1 rounded-full">
+                            Pets Allowed
+                        </span>
+                    )}
+                    {property.isParkingIncluded && (
+                        <span className="bg-white/80 text-black text-xs font-semibold px-2 py-1 rounded-full">
+                            Parking Included
+                        </span>
+                    )}
                 </div>
             </div>
-        </div>
-    )
-};
+            <div className="p-4">
+                <h2 className="text-xl font-bold mb-1 line-clamp-1">
+                    {property.name}
+                </h2>
+                <p className="text-gray-600 mb-2">
+                    {property?.location?.address}, {property?.location?.city}
+                </p>
+                <div className="flex items-center gap-4 lg:gap-4 text-gray-600 mt-5 mb-2">
+                    <span className="flex items-center xl:text-sm flex-col xs:flex-row md:flex-col lg:flex-row">
+                        <Bed className="w-5 h-5 mr-2" />
+                        {property.beds} Bed
+                    </span>
+                    <span className="flex items-center xl:text-sm flex-col xs:flex-row md:flex-col lg:flex-row">
+                        <Bath className="w-5 h-5 mr-2" />
+                        {property.baths} Bath
+                    </span>
+                    <span className="flex items-center xl:text-sm flex-col xs:flex-row md:flex-col lg:flex-row">
+                        <House className="w-5 h-5 mr-2" />
+                        {property.squareFeet.toLocaleString()} sq ft
+                    </span>
+                </div>
+                <hr className="text-neutral-300" />
+                <div className="flex justify-between items-center mt-2">
+                    <div className="flex items-center">
+                        <Star className="w-4 h-4 text-yellow-400 mr-1" />
+                        <span className="font-semibold">
+                            {property.averageRating.toFixed(1)}
+                        </span>
+                        <span className="text-gray-600 ml-1 text-sm ">
+                            ({property.numberOfReviews} Reviews)
+                        </span>
+                    </div>
+                    <p className="text-lg font-bold">
+                        {/* ${property.pricePerMonth.toFixed(0)}{" "} */}
+                        ${property.pricePerMonth.toLocaleString(undefined, { maximumFractionDigits: 0 })}{" "}
+                        {/* <span className="text-gray-600 text-base font-normal"> /month</span> */}
+                        <span className="text-gray-600 text-base font-normal">
+                            <span className="hidden md:inline lg:hidden"> /mo</span>
+                            <span className="inline md:hidden lg:inline"> /month</span>
+                        </span>
+                    </p>
+                </div>
 
-export default ResidenceCard
+            </div>
+
+            <div className="flex justify-center items-center mb-5">
+                <Button className="border border-neutral-100 cursor-pointer hover:shadow-md">
+                    <Link
+                        href={`/tenants/residences/${property.id}`}
+                        className="hover:text-blue-500 text-base"
+                        scroll={false}
+                    >
+                        View Details
+                    </Link>
+
+                </Button>
+            </div>
+        </div>
+    );
+};
+export default ResidenceCard;

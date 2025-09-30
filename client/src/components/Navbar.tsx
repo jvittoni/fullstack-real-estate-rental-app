@@ -62,37 +62,7 @@ const Navbar = () => {
               </div>
             </div>
           </Link>
-          {isDashboardPage && authUser && (
-            <Button
-              variant="secondary"
-              className='md:ml-4 bg-neutral-50 text-neutral-800 hover:bg-red-400 hover:text-neutral-50'
-              onClick={() =>
-                router.push(
-                  authUser.userRole?.toLowerCase() === "manager"
-                    ? "/managers/newproperty"
-                    : "/search"
-                )
-              }
-            >
-              {authUser.userRole?.toLowerCase() === "manager" ? (
-                <>
-                  <Plus className='h-4 w-4' />
-                  <span className='hidden md:block ml-2'>Add New Property</span>
-                </>
-              ) : (
-                <>
-                  <Search className='h-4 w-4' />
-                  <span className='hidden md:block ml-2'>Search Properties</span>
-                </>
-              )}
-            </Button>
-          )}
         </div>
-        {!isDashboardPage && (
-          <p className='text-neutral-200 hidden md:block'>
-            Discover your perfect residential rental with our advanced search
-          </p>
-        )}
 
         <div className='flex items-center gap-5'>
           {authUser ? (
@@ -111,9 +81,10 @@ const Navbar = () => {
                     <AvatarImage src={authUser.userInfo?.image} />
                     <AvatarFallback className='bg-neutral-600'>
                       {authUser.userRole?.[0].toUpperCase()}
+                      {/* {authUser.userInfo?.name[0].toUpperCase()} */}
                     </AvatarFallback>
                   </Avatar>
-                  <p className='text-neutral-300 hidden md:block'>
+                  <p className='text-neutral-300 text-lg hidden md:block'>
                     {authUser.userInfo?.name}
                   </p>
                 </DropdownMenuTrigger>

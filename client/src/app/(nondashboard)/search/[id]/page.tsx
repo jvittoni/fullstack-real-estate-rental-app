@@ -22,16 +22,17 @@ const SingleListing = () => {
             <ImagePreviews
                 images={["/singlelisting-2.jpg", "/singlelisting-3.jpg"]}
             />
-            <div className="flex flex-col md:flex-row justify-center gap-10 mx-10 md:w-4/5 md:mx-auto mt-16 mb-8">
-                <div className="order-2 md:order-1">
-                    <PropertyOverview propertyId={propertyId} />
-                    <PropertyDetails propertyId={propertyId} />
-                    <PropertyLocation propertyId={propertyId} />
-                </div>
-
-                <div className="order-1 md:order-2">
+            <div className="flex flex-col  justify-center gap-5 mx-10 md:w-5/6 xl:w-3/4 md:mx-auto mt-16 mb-8">
+                <div className='flex flex-col md:flex-row gap-5 lg:gap-10 justify-between'>
+                    <div className='w-full md:w-3/4'>
+                        <PropertyOverview propertyId={propertyId} />
+                    </div>
                     <ContactWidget onOpenModal={() => setIsModalOpen(true)} />
                 </div>
+
+                <PropertyDetails propertyId={propertyId} />
+                <PropertyLocation propertyId={propertyId} />
+
             </div>
 
             {authUser && (

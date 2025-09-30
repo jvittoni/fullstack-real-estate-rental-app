@@ -62,7 +62,16 @@ const NewProperty = () => {
 
         formData.append("managerCognitoId", authUser.cognitoInfo.userId);
 
-        await createProperty(formData);
+        // await createProperty(formData);
+        try {
+            await createProperty(formData).unwrap();
+            // window.location.reload();
+            setTimeout(() => {
+                window.location.reload();
+            }, 3000);
+        } catch (error) {
+            console.error("Failed to create property", error);
+        }
     };
 
     return (

@@ -5,6 +5,7 @@ import { NAVBAR_HEIGHT } from '@/lib/constants'
 import { useGetAuthUserQuery } from '@/state/api'
 import { usePathname, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
+import FooterSection from './landing/FooterSection';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
 
@@ -54,6 +55,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             >
                 {children}
             </main>
+            {/* <FooterSection /> */}
         </div>
     )
 }

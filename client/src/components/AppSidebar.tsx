@@ -14,9 +14,10 @@ const AppSidebar = ({ userType }: AppSidebarProps) => {
     const navLinks =
         userType === "manager"
             ? [
-                { icon: Building, label: "Properties", href: "/managers/properties" },
+                { icon: Home, label: "Properties", href: "/managers/properties" },
                 { icon: FileText, label: "Applications", href: "/managers/applications" },
                 { icon: Plus, label: "New Property", href: "/managers/newproperty" },
+                { icon: Search, label: "Search Properties", href: "/search" },
                 { icon: Settings, label: "Settings", href: "/managers/settings" }
             ] : [
                 { icon: Heart, label: "Favorites", href: "/tenants/favorites" },

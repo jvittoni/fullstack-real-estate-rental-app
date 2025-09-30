@@ -17,7 +17,7 @@ const ContactWidget = ({ onOpenModal }: ContactWidgetProps) => {
     };
 
     return (
-        <div className="bg-white border border-neutral-200 rounded-2xl p-7 h-fit min-w-[300px]">
+        <div className="bg-white border border-neutral-200 rounded-2xl p-7 h-fit min-w-[250px]">
             {/* Contact Property */}
             <div className="flex items-center gap-5 mb-4 border border-neutral-200 p-4 rounded-xl">
                 <div className="flex items-center p-4 bg-neutral-900 rounded-full">

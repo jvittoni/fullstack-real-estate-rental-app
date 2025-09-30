@@ -4,11 +4,12 @@ import BillingHistoryCard from "@/components/BillingHistoryCard";
 
 import Loading from "@/components/Loading";
 import PaymentMethodCard from "@/components/PaymentMethodCard";
-import ResidenceCard from "@/components/ResidenceCard";
-import TestCard from "@/components/TestCard";
+import ResidenceCard from "@/components/CurrentResidenceCard";
 import { useGetAuthUserQuery, useGetLeasesQuery, useGetPaymentsQuery, useGetPropertyQuery, } from "@/state/api";
 import { useParams } from "next/navigation";
 import React from "react";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 const Residence = () => {
     const { id } = useParams();
@@ -36,6 +37,14 @@ const Residence = () => {
 
     return (
         <div className="dashboard-container">
+            <Link
+                href="/tenants/residences"
+                className="flex items-center mb-4 mt-7 hover:text-neutral-500"
+                scroll={false}
+            >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                <span>Back to Residences</span>
+            </Link>
             <div className="w-full mx-auto lg:max-w-4/5 xl:max-w-6/7 2xl:max-w-5/6 mt-7">
                 <div className="xl:flex gap-10">
                     {currentLease && (

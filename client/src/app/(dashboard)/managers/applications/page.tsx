@@ -154,141 +154,151 @@ const Applications = () => {
                 </TabsList>
                 {["all", "pending", "approved", "denied"].map((tab) => (
                     <TabsContent key={tab} value={tab} className="mt-5 w-full">
-                        {filteredApplications
-                            .filter(
-                                (application) =>
-                                    tab === "all" || application.status.toLowerCase() === tab
-                            )
-                            .map((application) => (
-                                <ApplicationCard
-                                    key={application.id}
-                                    application={application}
-                                    userType="manager"
-                                >
-                                    <div className="flex justify-between items-center gap-5 w-full pb-4 px-4">
-                                        {/* Section Status */}
-                                        <div
-                                            className={`p-4 text-black grow  ${application.status === "Approved"
-                                                ? "bg-green-100"
-                                                : application.status === "Denied"
-                                                    ? "bg-red-100"
-                                                    : "bg-yellow-100"
-                                                }`}
-                                        >
-                                            <div className="flex flex-col xl:flex-row xl:gap-6 gap-2">
-                                                <div className="flex">
-                                                    <File className="w-5 h-5 mr-2 flex-shrink-0" />
-                                                    <span className="mr-2">
-                                                        Application submitted on{" "}
-                                                        {new Date(
-                                                            application.applicationDate
-                                                        ).toLocaleDateString()}
-                                                        .
-                                                    </span>
-                                                </div>
+                        {filteredApplications.length === 0 ? (
+                            <p className="text-center">
+                                No {tab} applications found.
+                            </p>
+                        ) : (
+                            filteredApplications
+                                .filter(
+                                    (application) =>
+                                        tab === "all" || application.status.toLowerCase() === tab
+                                )
+                                .map((application) => (
+                                    <ApplicationCard
+                                        key={application.id}
+                                        application={application}
+                                        userType="manager"
+                                    >
+                                        <div className="flex justify-between items-center gap-5 w-full pb-4 px-4">
+                                            {/* Section Status */}
+                                            <div
+                                                className={`p-4 text-black grow  ${application.status === "Approved"
+                                                    ? "bg-green-100"
+                                                    : application.status === "Denied"
+                                                        ? "bg-red-100"
+                                                        : "bg-yellow-100"
+                                                    }`}
+                                            >
+                                                <div className="flex flex-col xl:flex-row xl:gap-6 gap-2">
+                                                    <div className="flex">
+                                                        <File className="w-5 h-5 mr-2 flex-shrink-0" />
+                                                        <span className="mr-2">
+                                                            Application submitted on{" "}
+                                                            {new Date(
+                                                                application.applicationDate
+                                                            ).toLocaleDateString()}
+                                                            .
+                                                        </span>
+                                                    </div>
 
-                                                <div className="flex">
-                                                    {/* <CircleCheckBig className="w-5 h-5 mr-2 flex-shrink-0" /> */}
-                                                    <span
-                                                        className={`font-semibold flex ${application.status === "Approved"
-                                                            ? "text-green-800"
-                                                            : application.status === "Denied"
-                                                                ? "text-red-800"
-                                                                : "text-yellow-800"
-                                                            }`}
-                                                    >
-                                                        <CircleCheckBig className="w-5 h-5 mr-2 flex-shrink-0" />
-
-                                                        {application.status === "Approved" &&
-                                                            "This application has been approved."}
-                                                        {application.status === "Denied" &&
-                                                            "This application has been denied."}
-                                                        {application.status === "Pending" &&
-                                                            "This application is pending review."}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* Right Buttons */}
-                                        <div className="flex">
-                                            {application.status === "Approved" && (
-                                                <div className="flex flex-col xl:flex-row w-full items-center justify-center gap-2 ">
-                                                    <Link
-                                                        href={`/managers/properties/${application.property.id}`}
-                                                        className={`bg-white w-full xl:w-fit border border-gray-300 text-gray-700 py-2 px-4 
-                                                                    rounded-md flex items-center justify-center hover:bg-neutral-700 hover:text-neutral-50 cursor-pointer`}
-                                                        scroll={false}
-                                                    >
-                                                        <Hospital className="w-5 h-5 mr-2" />
-                                                        Property Details
-                                                    </Link>
-                                                    <button
-                                                        className={`bg-white  border border-gray-300 text-gray-700 py-2 px-4
-                                                                    rounded-md flex items-center justify-center hover:bg-neutral-700 hover:text-neutral-50 cursor-pointer`}
-                                                    >
-                                                        <Download className="w-5 h-5 mr-2" />
-                                                        Download Agreement
-                                                    </button>
-                                                </div>
-                                            )}
-                                            {application.status === "Pending" && (
-                                                <div className="flex flex-col justify-center w-full xl:items-center gap-2 md:flex-row ">
-                                                    <Link
-                                                        href={`/managers/properties/${application.property.id}`}
-                                                        className={`bg-white  border border-gray-300 text-gray-700 py-2 px-4 
-                                                                    rounded-md flex items-center justify-center hover:bg-neutral-700 hover:text-neutral-50 cursor-pointer`}
-                                                        scroll={false}
-                                                    >
-                                                        <Hospital className="w-5 h-5 mr-2" />
-                                                        Property Details
-                                                    </Link>
-                                                    <div className="flex flex-col gap-2 xl:flex-row lg:w-fit items-end w-full md:w-fit">
-                                                        <button
-                                                            className="w-full px-4 py-2 text-sm text-white bg-green-600 rounded hover:bg-green-500 cursor-pointer"
-                                                            onClick={() =>
-                                                                handleStatusChange(application.id, "Approved")
-                                                            }
+                                                    <div className="flex">
+                                                        {/* <CircleCheckBig className="w-5 h-5 mr-2 flex-shrink-0" /> */}
+                                                        <span
+                                                            className={`font-semibold flex ${application.status === "Approved"
+                                                                ? "text-green-800"
+                                                                : application.status === "Denied"
+                                                                    ? "text-red-800"
+                                                                    : "text-yellow-800"
+                                                                }`}
                                                         >
-                                                            Approve
-                                                        </button>
-                                                        <button
-                                                            className="w-full  px-4 py-2 text-sm text-white bg-red-600 rounded hover:bg-red-500 cursor-pointer"
-                                                            onClick={() =>
-                                                                handleStatusChange(application.id, "Denied")
-                                                            }
-                                                        >
-                                                            Deny
-                                                        </button>
+                                                            <CircleCheckBig className="w-5 h-5 mr-2 flex-shrink-0" />
+
+                                                            {application.status === "Approved" &&
+                                                                "This application has been approved."}
+                                                            {application.status === "Denied" &&
+                                                                "This application has been denied."}
+                                                            {application.status === "Pending" &&
+                                                                "This application is pending review."}
+                                                        </span>
                                                     </div>
                                                 </div>
-                                            )}
-                                            {application.status === "Denied" && (
-                                                <div className="flex flex-col xl:flex-row w-full items-center justify-center gap-2 ">
-                                                    <Link
-                                                        href={`/managers/properties/${application.property.id}`}
-                                                        className={`bg-white border border-gray-300 text-gray-700 py-2 px-4 
+                                            </div>
+
+                                            {/* Right Buttons */}
+                                            <div className="flex">
+                                                {application.status === "Approved" && (
+                                                    <div className="flex flex-col xl:flex-row w-full items-center justify-center gap-2 ">
+                                                        <Link
+                                                            href={`/managers/properties/${application.property.id}`}
+                                                            className={`bg-white w-full xl:w-fit border border-gray-300 text-gray-700 py-2 px-4 
                                                                     rounded-md flex items-center justify-center hover:bg-neutral-700 hover:text-neutral-50 cursor-pointer`}
-                                                        scroll={false}
-                                                    >
-                                                        <Hospital className="w-5 h-5 mr-2" />
-                                                        Property Details
-                                                    </Link>
-                                                    <button
-                                                        className={`bg-gray-800 w-full xl:w-fit text-white py-2 px-4 rounded-md flex items-center
+                                                            scroll={false}
+                                                        >
+                                                            <Hospital className="w-5 h-5 mr-2" />
+                                                            Property Details
+                                                        </Link>
+                                                        <button
+                                                            className={`bg-white  border border-gray-300 text-gray-700 py-2 px-4
+                                                                    rounded-md flex items-center justify-center hover:bg-neutral-700 hover:text-neutral-50 cursor-pointer`}
+                                                        >
+                                                            <Download className="w-5 h-5 mr-2" />
+                                                            Download Agreement
+                                                        </button>
+                                                    </div>
+                                                )}
+                                                {application.status === "Pending" && (
+                                                    <div className="flex flex-col justify-center w-full xl:items-center gap-2 md:flex-row ">
+                                                        <Link
+                                                            href={`/managers/properties/${application.property.id}`}
+                                                            className={`bg-white  border border-gray-300 text-gray-700 py-2 px-4 
+                                                                    rounded-md flex items-center justify-center hover:bg-neutral-700 hover:text-neutral-50 cursor-pointer`}
+                                                            scroll={false}
+                                                        >
+                                                            <Hospital className="w-5 h-5 mr-2" />
+                                                            Property Details
+                                                        </Link>
+                                                        <div className="flex flex-col gap-2 xl:flex-row lg:w-fit items-end w-full md:w-fit">
+                                                            <button
+                                                                className="w-full px-4 py-2 text-sm text-white bg-green-600 rounded hover:bg-green-500 cursor-pointer"
+                                                                onClick={() =>
+                                                                    handleStatusChange(application.id, "Approved")
+                                                                }
+                                                            >
+                                                                Approve
+                                                            </button>
+                                                            <button
+                                                                className="w-full  px-4 py-2 text-sm text-white bg-red-600 rounded hover:bg-red-500 cursor-pointer"
+                                                                onClick={() =>
+                                                                    handleStatusChange(application.id, "Denied")
+                                                                }
+                                                            >
+                                                                Deny
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                {application.status === "Denied" && (
+                                                    <div className="flex flex-col xl:flex-row w-full items-center justify-center gap-2 ">
+                                                        <Link
+                                                            href={`/managers/properties/${application.property.id}`}
+                                                            className={`bg-white border border-gray-300 text-gray-700 py-2 px-4 
+                                                                    rounded-md flex items-center justify-center hover:bg-neutral-700 hover:text-neutral-50 cursor-pointer`}
+                                                            scroll={false}
+                                                        >
+                                                            <Hospital className="w-5 h-5 mr-2" />
+                                                            Property Details
+                                                        </Link>
+                                                        <button
+                                                            className={`bg-gray-800 w-full xl:w-fit text-white py-2 px-4 rounded-md flex items-center
                           justify-center hover:bg-secondary-500 hover:text-neutral-50 cursor-pointer`}
-                                                    >
-                                                        Contact User
-                                                    </button>
-                                                </div>
-                                            )}
+                                                        >
+                                                            Contact User
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
-                                </ApplicationCard>
-                            ))}
+                                    </ApplicationCard>
+                                ))
+
+                        )}
                     </TabsContent>
                 ))}
             </Tabs>
+            {(!applications || applications.length === 0) && (
+                <p>You don&lsquo;t currently have any applications.</p>
+            )}
         </div>
     );
 };
