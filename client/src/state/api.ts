@@ -258,14 +258,26 @@ export const api = createApi({
       },
     }),
 
+    // getPropertyLeases: build.query<Lease[], number>({
+    //   query: (propertyId) => `properties/${propertyId}/leases`,
+    //   providesTags: ["Leases"],
+    //   async onQueryStarted(_, { queryFulfilled }) {
+    //     await withToast(queryFulfilled, {
+    //       error: "Failed to fetch property leases.",
+    //     });
+    //   },
+    // }),
     getPropertyLeases: build.query<Lease[], number>({
-      query: (propertyId) => `properties/${propertyId}/leases`,
+      query: () => "leases",
       providesTags: ["Leases"],
       async onQueryStarted(_, { queryFulfilled }) {
         await withToast(queryFulfilled, {
-          error: "Failed to fetch property leases.",
+          error: "Failed to fetch leases.",
         });
       },
+      transformResponse: (response: Lease[], meta, propertyId) => {
+        return response.filter(lease => lease.property.id === propertyId);
+      }
     }),
 
     getPayments: build.query<Payment[], number>({
@@ -313,6 +325,25 @@ export const api = createApi({
       },
     }),
 
+    updateProperty: build.mutation<Property, { id: number; data: FormData }>({
+      query: ({ id, data }) => ({
+        url: `properties/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: (result, error, { id }) => [
+        { type: "PropertyDetails", id },
+        { type: "Properties", id: "LIST" },
+      ],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          success: "Property updated successfully!",
+          error: "Failed to update property.",
+        });
+      },
+    }),
+
+
 
   }),
 });
@@ -334,5 +365,6 @@ export const {
   useGetPropertyLeasesQuery,
   useGetApplicationsQuery,
   useUpdateApplicationStatusMutation,
-  useCreatePropertyMutation
+  useCreatePropertyMutation,
+  useUpdatePropertyMutation
 } = api;

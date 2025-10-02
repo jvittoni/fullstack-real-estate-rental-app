@@ -88,17 +88,27 @@ const PropertyCard = ({
                 </div>
 
             </div>
-            <div className="flex justify-center items-center py-5 font-semibold">
-                <Button className="border border-neutral-100 px-10 cursor-pointer hover:shadow-md group">
+            <div className="flex justify-around items-center py-5 px-3 gap-4 font-semibold">
+        
+                <div className="flex w-full gap-4 py-5 px-3 font-semibold">
                     <Link
-                        href={`/managers/properties/${property.id}`}
-                        className="group-hover:text-blue-500 text-base"
+                        href={`/managers/properties/${property.id}/edit`}
                         scroll={false}
+                        className="w-full border border-neutral-200 bg-neutral-100/80 cursor-pointer shadow hover:shadow-md group text-base text-center py-2 rounded"
                     >
-                        View Details
+                        <span className="block group-hover:text-blue-500">Edit</span>
                     </Link>
 
-                </Button>
+                    <Link
+                        href={`/managers/properties/${property.id}`}
+                        scroll={false}
+                        className="w-full border border-neutral-100 cursor-pointer shadow hover:shadow-md group text-base text-center py-2 rounded"
+                    >
+                        <span className="block group-hover:text-blue-500">View Details</span>
+                    </Link>
+                </div>
+
+
             </div>
         </div>
     );

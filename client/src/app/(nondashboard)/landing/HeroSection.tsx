@@ -20,7 +20,12 @@ const HeroSection = () => {
     const handleLocationSearch = async () => {
         try {
             const trimmedQuery = searchQuery.trim();
-            if (!trimmedQuery) return;
+            // if (!trimmedQuery) return;
+            
+            if (!trimmedQuery) {
+                router.push("/search");
+                return;
+            }
 
             const response = await fetch(
                 `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
@@ -52,7 +57,7 @@ const HeroSection = () => {
                         state = item.short_code?.split("-")[1];
                     }
                 });
-                
+
                 // Context: city, state, county (district)
                 // feature.context?.forEach((item: any) => {
                 //     if (item.id.startsWith("place") && !city) {
