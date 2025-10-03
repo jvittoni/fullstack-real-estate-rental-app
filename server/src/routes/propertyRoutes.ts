@@ -2,7 +2,8 @@ import express from "express";
 import {
     getProperties,
     getProperty,
-    createProperty
+    createProperty,
+    updateProperty
 } from "../controllers/propertyControllers.ts"
 import { authMiddleware } from "../middleware/authMiddleware.ts";
 import multer from "multer";
@@ -20,6 +21,11 @@ router.post(
         upload.array("photos"),
         createProperty
     );
-
+router.put(
+  "/:id",
+  authMiddleware(["manager"]),
+  upload.array("photos"),
+  updateProperty
+);
 
 export default router;
