@@ -28,14 +28,15 @@ A full-stack real estate listing and management application built with **Next.js
 - **Redux Toolkit** + RTK Query
 - **Radix UI**, **Lucide Icons**
 - **React Hook Form** + **Zod** (validation)
-- **Mapbox GL** (map & geolocation)
-- **AWS Amplify** (authentication)
+- **Mapbox GL** (map rendering)
+- **AWS Amplify** + **AWS Cognito** (authentication)
 
 ### Backend
 
 - **Node.js** + **Express 5**
 - **Prisma ORM** (PostgreSQL)
 - **AWS S3** SDK for image upload
+- **Nominatim** (address geolocation)
 - **JWT** for auth validation
 - **Helmet**, **CORS**, **Morgan** for security/logging
 - **Multer** for multipart file handling
