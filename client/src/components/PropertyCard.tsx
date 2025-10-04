@@ -4,19 +4,34 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from 'react';
 import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
+import { useDeletePropertyMutation } from "@/state/api";
 
 interface PropertyCardProps {
     property: Property;
     // propertyLink?: string;
 }
 
-const PropertyCard = ({
-    property,
-    // propertyLink,
-}: PropertyCardProps) => {
+const PropertyCard = ({ property }: PropertyCardProps) => {
     const [imgSrc, setImgSrc] = useState(
         property.photoUrls?.[0] || "/placeholder.jpg"
     );
+
+    const router = useRouter();
+    const [deleteProperty] = useDeletePropertyMutation();
+
+    const handleDeleteProperty = async () => {
+        const confirmed = window.confirm("Are you sure you want to delete this property?");
+        if (!confirmed) return;
+
+        try {
+            await deleteProperty(property.id).unwrap();
+            router.refresh(); // OR manually remove from list if you're storing it in local state
+        } catch (error) {
+            console.error("Failed to delete property:", error);
+            alert("Error deleting property. Please try again.");
+        }
+    };
 
     return (
         <div className="bg-white rounded-xl overflow-hidden shadow-lg w-full mb-5 lg:max-w-6/7 xl:max-w-full">
@@ -88,17 +103,24 @@ const PropertyCard = ({
                 </div>
 
             </div>
-            <div className="flex justify-around items-center py-5 px-3 gap-4 font-semibold">
-        
-                <div className="flex w-full gap-4 py-5 px-3 font-semibold">
+            <div className="flex flex-col justify-around items-center py-5 px-3 gap-5 font-semibold">
+
+                <div className="flex w-full gap-4 pt-2 px-3 font-semibold">
+                    <button
+                        onClick={handleDeleteProperty}
+                        className="w-full border border-neutral-100 cursor-pointer shadow hover:shadow-md hover:bg-red-600 hover:border-red-700 transition-colors duration-100 group text-base text-center py-2 rounded"
+                    >
+                        <span className="block group-hover:text-white">Delete</span>
+                    </button>
                     <Link
                         href={`/managers/properties/${property.id}/edit`}
                         scroll={false}
-                        className="w-full border border-neutral-200 bg-neutral-100/80 cursor-pointer shadow hover:shadow-md group text-base text-center py-2 rounded"
+                        className="w-full border border-neutral-100  cursor-pointer shadow hover:shadow-md group text-base text-center py-2 rounded"
                     >
                         <span className="block group-hover:text-blue-500">Edit</span>
                     </Link>
-
+                </div>
+                <div className="flex w-full px-3">
                     <Link
                         href={`/managers/properties/${property.id}`}
                         scroll={false}
@@ -107,7 +129,6 @@ const PropertyCard = ({
                         <span className="block group-hover:text-blue-500">View Details</span>
                     </Link>
                 </div>
-
 
             </div>
         </div>

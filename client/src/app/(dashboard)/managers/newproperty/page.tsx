@@ -10,10 +10,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 const NewProperty = () => {
     const [createProperty] = useCreatePropertyMutation();
     const { data: authUser } = useGetAuthUserQuery();
+    const router = useRouter();
 
 
 
@@ -66,9 +68,10 @@ const NewProperty = () => {
         try {
             await createProperty(formData).unwrap();
             // window.location.reload();
-            setTimeout(() => {
-                window.location.reload();
-            }, 3000);
+            // setTimeout(() => {
+            //     window.location.reload();
+            // }, 3000);
+            router.push("/managers/properties");
         } catch (error) {
             console.error("Failed to create property", error);
         }

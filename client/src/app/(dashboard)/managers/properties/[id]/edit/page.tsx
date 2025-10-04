@@ -10,11 +10,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 const EditProperty = () => {
     const { id } = useParams();
     const propertyId = Number(id);
+    const router = useRouter();
     // const [createProperty] = useCreatePropertyMutation();
     const { data: authUser } = useGetAuthUserQuery();
     //   const { propertyId } = useParams(); // assuming route is /properties/:propertyId
@@ -109,9 +112,11 @@ const EditProperty = () => {
         try {
             await updateProperty({ id: propertyId, data: formData }).unwrap();
 
-            setTimeout(() => {
-                window.location.reload();
-            }, 3000);
+            // setTimeout(() => {
+            //     window.location.reload();
+            // }, 3000);
+
+            router.push("/managers/properties");
         } catch (error) {
             console.error("Failed to update property", error);
         }
@@ -124,7 +129,17 @@ const EditProperty = () => {
 
 
     return (
-        <div className="dashboard-container">
+        <div className="dashboard-container mt-7">
+            {/* Back to properties page */}
+
+            <Link
+                href="/managers/properties"
+                className="flex items-center mb-4 hover:text-neutral-500"
+                scroll={false}
+            >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                <span>Back to Properties</span>
+            </Link>
             <Header
                 title="Update Property"
                 subtitle="Update the information for an existing property."
@@ -230,11 +245,11 @@ const EditProperty = () => {
                             <div className="space-y-6">
 
                                 <label className="block text-sm mb-2">Amenity</label>
-                                <select {...register("amenities")} className="form-select w-full border border-neutral-200 rounded-md p-2">
+                                <select {...register("amenities")} className="w-full border border-neutral-200 rounded-md p-2">
                                     <option value="">Select an amenity</option>
                                     {amenityList.map((amenity) => (
                                         <option key={amenity} value={amenity}>
-                                            {amenity}
+                                            {amenity.replace(/([A-Z])/g, ' $1').trim()}
                                         </option>
                                     ))}
                                 </select>
@@ -248,7 +263,7 @@ const EditProperty = () => {
                                     <option value="">Select a highlight</option>
                                     {highlightList.map((highlight) => (
                                         <option key={highlight} value={highlight}>
-                                            {highlight}
+                                            {highlight.replace(/([A-Z])/g, ' $1').trim()}
                                         </option>
                                     ))}
                                 </select>

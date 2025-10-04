@@ -322,72 +322,72 @@ export const createProperty = async (req: Request, res: Response): Promise<void>
 
 
 export const updateProperty = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const propertyId = Number(req.params.id);
-    if (isNaN(propertyId)) {
-      res.status(400).json({ error: "Invalid property ID" });
-      return;
-    }
-
-    const files = req.files as Express.Multer.File[] | undefined;
-    const {
-      address,
-      city,
-      state,
-      country,
-      postalCode,
-      managerCognitoId,
-      ...propertyData
-    } = req.body;
-
-    // Get existing property with location to update location
-    const existingProperty = await prisma.property.findUnique({
-      where: { id: propertyId },
-      include: { location: true },
-    });
-
-    if (!existingProperty) {
-      res.status(404).json({ error: "Property not found" });
-      return;
-    }
-
-    // Geocode updated address if address-related fields changed
-    let locationId = existingProperty.locationId;
-
-    if (
-      address !== existingProperty.location.address ||
-      city !== existingProperty.location.city ||
-      state !== existingProperty.location.state ||
-      country !== existingProperty.location.country ||
-      postalCode !== existingProperty.location.postalCode
-    ) {
-      const geocodingUrl = `https://nominatim.openstreetmap.org/search?${new URLSearchParams(
-        {
-          street: address,
-          city,
-          country,
-          postalcode: postalCode,
-          format: "json",
-          limit: "1",
+    try {
+        const propertyId = Number(req.params.id);
+        if (isNaN(propertyId)) {
+            res.status(400).json({ error: "Invalid property ID" });
+            return;
         }
-      ).toString()}`;
 
-      const geocodingResponse = await axios.get(geocodingUrl, {
-        headers: {
-          "User-Agent": "RealEstateApp (justsomedummyemail@gmail.com)",
-        },
-      });
+        const files = req.files as Express.Multer.File[] | undefined;
+        const {
+            address,
+            city,
+            state,
+            country,
+            postalCode,
+            managerCognitoId,
+            ...propertyData
+        } = req.body;
 
-      const [longitude, latitude] =
-        geocodingResponse.data[0]?.lon && geocodingResponse.data[0]?.lat
-          ? [
-              parseFloat(geocodingResponse.data[0]?.lon),
-              parseFloat(geocodingResponse.data[0]?.lat),
-            ]
-          : [0, 0];
+        // Get existing property with location to update location
+        const existingProperty = await prisma.property.findUnique({
+            where: { id: propertyId },
+            include: { location: true },
+        });
 
-      // Update location
-      const updatedLocation = await prisma.$queryRaw<Location[]>`
+        if (!existingProperty) {
+            res.status(404).json({ error: "Property not found" });
+            return;
+        }
+
+        // Geocode updated address if address-related fields changed
+        let locationId = existingProperty.locationId;
+
+        if (
+            address !== existingProperty.location.address ||
+            city !== existingProperty.location.city ||
+            state !== existingProperty.location.state ||
+            country !== existingProperty.location.country ||
+            postalCode !== existingProperty.location.postalCode
+        ) {
+            const geocodingUrl = `https://nominatim.openstreetmap.org/search?${new URLSearchParams(
+                {
+                    street: address,
+                    city,
+                    country,
+                    postalcode: postalCode,
+                    format: "json",
+                    limit: "1",
+                }
+            ).toString()}`;
+
+            const geocodingResponse = await axios.get(geocodingUrl, {
+                headers: {
+                    "User-Agent": "RealEstateApp (justsomedummyemail@gmail.com)",
+                },
+            });
+
+            const [longitude, latitude] =
+                geocodingResponse.data[0]?.lon && geocodingResponse.data[0]?.lat
+                    ? [
+                        parseFloat(geocodingResponse.data[0]?.lon),
+                        parseFloat(geocodingResponse.data[0]?.lat),
+                    ]
+                    : [0, 0];
+
+            // Update location
+            const updatedLocation = await prisma.$queryRaw<Location[]>`
         UPDATE "Location"
         SET
           address = ${address},
@@ -400,17 +400,17 @@ export const updateProperty = async (req: Request, res: Response): Promise<void>
         RETURNING id, address, city, state, country, "postalCode", ST_AsText(coordinates) as coordinates;
       `;
 
-      if (!updatedLocation[0]) {
-        res.status(500).json({ error: "Failed to update location" });
-        return;
-      }
-    }
+            if (!updatedLocation[0]) {
+                res.status(500).json({ error: "Failed to update location" });
+                return;
+            }
+        }
 
-    //  Handle photo uploads
-   
-    // const photoUrls = files ? await uploadPhotos(files) : existingProperty.photoUrls;
+        //  Handle photo uploads
 
-      // const photoUrls = await Promise.all(
+        // const photoUrls = files ? await uploadPhotos(files) : existingProperty.photoUrls;
+
+        // const photoUrls = await Promise.all(
         //     files.map(async (file) => {
         //         const uploadParams = {
         //             Bucket: process.env.S3_BUCKET_NAME!,
@@ -428,39 +428,64 @@ export const updateProperty = async (req: Request, res: Response): Promise<void>
         //     })
         // );
 
-    // Update property
-    const updatedProperty = await prisma.property.update({
-      where: { id: propertyId },
-      data: {
-        ...propertyData,
-        // photoUrls,
-        amenities:
-          typeof propertyData.amenities === "string"
-            ? propertyData.amenities.split(",")
-            : [],
-        highlights:
-          typeof propertyData.highlights === "string"
-            ? propertyData.highlights.split(",")
-            : [],
-        isPetsAllowed: propertyData.isPetsAllowed === "true" || propertyData.isPetsAllowed === true,
-        isParkingIncluded: propertyData.isParkingIncluded === "true" || propertyData.isParkingIncluded === true,
-        pricePerMonth: parseFloat(propertyData.pricePerMonth),
-        securityDeposit: parseFloat(propertyData.securityDeposit),
-        applicationFee: parseFloat(propertyData.applicationFee),
-        beds: parseInt(propertyData.beds),
-        baths: parseFloat(propertyData.baths),
-        squareFeet: parseInt(propertyData.squareFeet),
-        managerCognitoId, 
-        locationId, 
-      },
-      include: {
-        location: true,
-        manager: true,
-      },
-    });
+        // Update property
+        const updatedProperty = await prisma.property.update({
+            where: { id: propertyId },
+            data: {
+                ...propertyData,
+                // photoUrls,
+                amenities:
+                    typeof propertyData.amenities === "string"
+                        ? propertyData.amenities.split(",")
+                        : [],
+                highlights:
+                    typeof propertyData.highlights === "string"
+                        ? propertyData.highlights.split(",")
+                        : [],
+                isPetsAllowed: propertyData.isPetsAllowed === "true" || propertyData.isPetsAllowed === true,
+                isParkingIncluded: propertyData.isParkingIncluded === "true" || propertyData.isParkingIncluded === true,
+                pricePerMonth: parseFloat(propertyData.pricePerMonth),
+                securityDeposit: parseFloat(propertyData.securityDeposit),
+                applicationFee: parseFloat(propertyData.applicationFee),
+                beds: parseInt(propertyData.beds),
+                baths: parseFloat(propertyData.baths),
+                squareFeet: parseInt(propertyData.squareFeet),
+                managerCognitoId,
+                locationId,
+            },
+            include: {
+                location: true,
+                manager: true,
+            },
+        });
 
-    res.status(200).json(updatedProperty);
-  } catch (error: any) {
-    res.status(500).json({ message: `Error updating property: ${error.message}` });
-  }
+        res.status(200).json(updatedProperty);
+    } catch (error: any) {
+        res.status(500).json({ message: `Error updating property: ${error.message}` });
+    }
+};
+
+export const deleteProperty = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+
+        const property = await prisma.property.findUnique({
+            where: { id: Number(id) },
+        });
+
+        if (!property) {
+            res.status(404).json({ message: "Property not found" });
+            return;
+        }
+
+        // Delete the property
+        await prisma.property.delete({
+            where: { id: Number(id) },
+        });
+
+        res.status(200).json({ message: "Property deleted successfully" });
+
+    } catch (error: any) {
+        res.status(500).json({ message: `Error deleting property: ${error.message}` });
+    }
 };

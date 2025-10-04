@@ -343,7 +343,22 @@ export const api = createApi({
       },
     }),
 
-
+    deleteProperty: build.mutation<{ success: boolean }, number>({
+      query: (id) => ({
+        url: `properties/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, id) => [
+        { type: "PropertyDetails", id },
+        { type: "Properties", id: "LIST" },
+      ],
+      async onQueryStarted(_, { queryFulfilled }) {
+        await withToast(queryFulfilled, {
+          success: "Property deleted successfully!",
+          error: "Failed to delete property.",
+        });
+      },
+    }),
 
   }),
 });
@@ -366,5 +381,6 @@ export const {
   useGetApplicationsQuery,
   useUpdateApplicationStatusMutation,
   useCreatePropertyMutation,
-  useUpdatePropertyMutation
+  useUpdatePropertyMutation,
+  useDeletePropertyMutation
 } = api;
